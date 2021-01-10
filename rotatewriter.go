@@ -41,6 +41,13 @@ func (w *RotateWriter) Write(output []byte) (int, error) {
     }
   }
 
+  fi, _ := os.Stat(w.Dir+w.Filename);
+  if w.MaxSize > 0 && fi.Size() >= w.MaxSize {
+    if err := w.Rotate(); err != nil {
+      return 0, err
+    }
+  }
+
   if w.now.After(w.now.Add(w.ExTime)) {
     if err := w.Rotate(); err != nil {
       return 0, err
@@ -50,15 +57,10 @@ func (w *RotateWriter) Write(output []byte) (int, error) {
   return w.fp.Write(output)
 }
 
-// Resume the current log file instead of creating a new one each time program is started back up.
+// Create a new log file does not exists, opens if log file does exists.
 func (w *RotateWriter) Resume() error {
   var err error
   var filename = w.Dir+w.Filename
-
-  // Check if file already exixts to resume it.
-  if _, err := os.Stat(filename); err != nil {
-    return err
-  }
 
   w.now = time.Now()
   w.fp, err = os.OpenFile(filename, os.O_RDWR | os.O_CREATE, 0666)
@@ -84,17 +86,9 @@ func (w *RotateWriter) Rotate() error {
   }
 
   // Rename dest file if it already exists
-  if fi, err := os.Stat(filename); err == nil {
+  if _, err := os.Stat(filename); err == nil {
     if err := w.renameFile(); err != nil {
       return err
-    }
-  }else{
-    if w.MaxSize > 0 {
-      if fi.Size() >= w.MaxSize {
-        if err := w.renameFile(); err != nil {
-          return err
-        }
-      }
     }
   }
 
