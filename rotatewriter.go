@@ -1,4 +1,6 @@
-// Credits to https://stackoverflow.com/a/28797984
+// Credits to https://stackoverflow.com/a/28797984 for
+// the basis of RotateWriter struct.
+
 // Interface to io.Writer to automaticly rotate the
 // log file based on max size and/or time
 package auralog
