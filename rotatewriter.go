@@ -1,4 +1,6 @@
 // Credits to https://stackoverflow.com/a/28797984
+// Interface to io.Writer to automaticly rotate the
+// log file based on max size and/or time
 package auralog
 
 import (
@@ -10,15 +12,16 @@ import (
 )
 
 var (
-  Megabyte int64 = 1024 * 1024
-  Kilobyte int64 = 1024
+  Megabyte int64 = 1024 * 1024 // Variable to use along with MaxSize to use megabytes.
+  Kilobyte int64 = 1024 // Variable to use along with MaxSize to use kilobytes.
 )
 
+// The structure for RotateWriter, which should interface io.Writer
 type RotateWriter struct {
-  Dir string
-  Filename string // should be set to the actual filename
-  ExTime time.Duration
-  MaxSize int64
+  Dir string // the directory to put log files.
+  Filename string // should be set to the actual filename and extension.
+  ExTime time.Duration // how often the log should rotate.
+  MaxSize int64 // max size a log file is allowed to be in bytes.
 
   lock sync.Mutex
   now time.Time
@@ -45,6 +48,7 @@ func (w *RotateWriter) Write(output []byte) (int, error) {
   return w.fp.Write(output)
 }
 
+// Resume the current log file instead of creating a new one each time program is started back up.
 func (w *RotateWriter) Resume() error {
   var err error
   var filename = w.Dir+w.Filename
@@ -63,10 +67,6 @@ func (w *RotateWriter) Resume() error {
 func (w *RotateWriter) Rotate() error {
   var err error
   var filename = w.Dir+w.Filename
-
-  // no need to lock if it's being locked anyways by the caller.
-  // w.lock.Lock()
-  // defer w.lock.Unlock()
 
   // create the needed direactories if they don't exists.
   if err := os.MkdirAll(w.Dir, 0755); err != nil {
@@ -102,6 +102,7 @@ func (w *RotateWriter) Rotate() error {
   return err
 }
 
+// Rename the log file to include the current date. Uses RFC3339 time format.
 func (w *RotateWriter) renameFile() error {
   var filename = w.Dir+w.Filename
   newfn := filename[:len(filename)-len(filepath.Ext(w.Filename))]+"-"+time.Now().Format(time.RFC3339)+filepath.Ext(w.Filename)

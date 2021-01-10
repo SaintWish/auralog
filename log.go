@@ -21,6 +21,13 @@ import (
 
 type LogLevel int
 
+// Constants for log levels.
+//	LogLevelInfo - Prints only info logs.
+//	LogLevelWarn - Prints info and warn logs.
+//	LogLevelError - Prints info, warn, and error logs.
+//	LogLevelFatal - Prints info, warn, error, fatal logs.
+//	LogLevelPanic - Prints info, warn, error, fatal, panic logs.
+//	LogLevelDebug - Prints info, warn, error, fatal, panic, debug logs.
 const (
   LogLevelInfo LogLevel = iota
   LogLevelWarn
@@ -31,6 +38,8 @@ const (
 	LogLevelTrace
 )
 
+// LogLevel.String returns the LogLevel string.
+//	Example: LogLevelWarn.String() will return "WARN: " string.
 func (l LogLevel) String() string {
   return [7]string{"INFO: ", "WARN: ", "ERROR: ", "FATAL: ", "PANIC: ", "DEBUG: ", "TRACE: "}[l]
 }
@@ -57,15 +66,16 @@ const (
 	LstdFlags = Ldate | Ltime // initial values for the standard logger
 )
 
+// A structure for cleaner code when initalizing Logger struct.
 type Config struct {
-  Output io.Writer
-  Prefix string
-  Level LogLevel
+  Output io.Writer // io.Writer of what to log to.
+  Prefix string // prefix on each line to identify the logger (but see Lmsgprefix)
+  Level LogLevel // What log level should be print.
 
   Flag int
-  WarnFlag int
-  ErrorFlag int
-  DebugFlag int
+  WarnFlag int // Required, flags for warn log.
+  ErrorFlag int // Required, flags for error, fatal, and panic logs.
+  DebugFlag int // Required, flags for debug logs.
 }
 
 // Cheap integer to fixed-width decimal ASCII. Give a negative width to avoid zero-padding.
@@ -92,10 +102,10 @@ func itoa(buf *[]byte, i int, wid int) {
 type Logger struct {
   filename string
   dir string
-  prefix string // prefix on each line to identify the logger (but see Lmsgprefix)
+  prefix string
 	loglevel LogLevel
 
-  flag int // properties
+  flag int
   warflag int
   errflag int
   debflag int
@@ -270,27 +280,43 @@ func (l *Logger) Println(v ...interface{}) {
 }
 
 // Warn level logging.
+// Warnf calls l.Output to print to the logger.
+// Arguments are handled in the manner of fmt.Printf.
 func (l *Logger) Warnf(format string, v ...interface{}) {
 	if l.loglevel <= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprintf(format, v...)) }
 }
 
+// Warn level logging.
+// Warn calls l.Output to print to the logger.
+// Arguments are handled in the manner of fmt.Print.
 func (l *Logger) Warn(v ...interface{}) {
   if l.loglevel <= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprint(v...)) }
 }
 
+// Warn level logging.
+// Warnln calls l.Output to print to the logger.
+// Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Warnln(v ...interface{}) {
   if l.loglevel <= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprintln(v...)) }
 }
 
 // Error level logging.
+// Errorf calls l.Output to print to the logger.
+// Arguments are handled in the manner of fmt.Printf.
 func (l *Logger) Errorf(format string, v ...interface{}) {
 	if l.loglevel <= LogLevelError { l.Output(LogLevelError, fmt.Sprintf(format, v...)) }
 }
 
+// Error level logging.
+// Error calls l.Output to print to the logger.
+// Arguments are handled in the manner of fmt.Print.
 func (l *Logger) Error(v ...interface{}) {
 	if l.loglevel <= LogLevelError { l.Output(LogLevelError, fmt.Sprint(v...)) }
 }
 
+// Error level logging.
+// Errorln calls l.Output to print to the logger.
+// Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Errorln(v ...interface{}) {
 	if l.loglevel <= LogLevelError { l.Output(LogLevelError, fmt.Sprintln(v...)) }
 }
@@ -337,14 +363,19 @@ func (l *Logger) Panicln(v ...interface{}) {
 }
 
 // Debug level logging.
+// Debugf is equivalent to l.Printf()
 func (l *Logger) Debugf(format string, v ...interface{}) {
 	if l.loglevel <= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprintf(format, v...)) }
 }
 
+// Debug level logging.
+// Debug is equivalent to l.Print()
 func (l *Logger) Debug(v ...interface{}) {
 	if l.loglevel <= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprint(v...)) }
 }
 
+// Debug level logging.
+// Debugln is equivalent to l.Println()
 func (l *Logger) Debugln(v ...interface{}) {
 	if l.loglevel <= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprintln(v...)) }
 }
