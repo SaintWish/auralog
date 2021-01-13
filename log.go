@@ -282,67 +282,66 @@ func (l *Logger) Println(v ...interface{}) {
 // Warnf calls l.Output to print to the logger.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *Logger) Warnf(format string, v ...interface{}) {
-	if l.loglevel <= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprintf(format, v...)) }
+	if l.loglevel >= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprintf(format, v...)) }
 }
 
 // Warn level logging.
 // Warn calls l.Output to print to the logger.
 // Arguments are handled in the manner of fmt.Print.
 func (l *Logger) Warn(v ...interface{}) {
-  if l.loglevel <= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprint(v...)) }
+  if l.loglevel >= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprint(v...)) }
 }
 
 // Warn level logging.
 // Warnln calls l.Output to print to the logger.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Warnln(v ...interface{}) {
-  if l.loglevel <= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprintln(v...)) }
+  if l.loglevel >= LogLevelWarn { l.Output(LogLevelWarn, fmt.Sprintln(v...)) }
 }
 
 // Error level logging.
 // Errorf calls l.Output to print to the logger.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *Logger) Errorf(format string, v ...interface{}) {
-	if l.loglevel <= LogLevelError { l.Output(LogLevelError, fmt.Sprintf(format, v...)) }
+	if l.loglevel >= LogLevelError { l.Output(LogLevelError, fmt.Sprintf(format, v...)) }
 }
 
 // Error level logging.
 // Error calls l.Output to print to the logger.
 // Arguments are handled in the manner of fmt.Print.
 func (l *Logger) Error(v ...interface{}) {
-	if l.loglevel <= LogLevelError { l.Output(LogLevelError, fmt.Sprint(v...)) }
+	if l.loglevel >= LogLevelError { l.Output(LogLevelError, fmt.Sprint(v...)) }
 }
 
 // Error level logging.
 // Errorln calls l.Output to print to the logger.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Errorln(v ...interface{}) {
-	if l.loglevel <= LogLevelError { l.Output(LogLevelError, fmt.Sprintln(v...)) }
+	if l.loglevel >= LogLevelError { l.Output(LogLevelError, fmt.Sprintln(v...)) }
 }
 
 // Fatalf is equivalent to l.Printf() followed by a call to os.Exit(1).
 func (l *Logger) Fatalf(format string, v ...interface{}) {
-	if l.loglevel <= LogLevelFatal { l.Output(LogLevelFatal, fmt.Sprintf(format, v...)) }
+	if l.loglevel >= LogLevelFatal { l.Output(LogLevelFatal, fmt.Sprintf(format, v...)) }
 	os.Exit(1)
 }
 
 // Fatal is equivalent to l.Print() followed by a call to os.Exit(1).
 func (l *Logger) Fatal(v ...interface{}) {
-	if l.loglevel <= LogLevelFatal { l.Output(LogLevelFatal, fmt.Sprint(v...)) }
-	l.Output(LogLevelFatal, fmt.Sprint(v...))
+	if l.loglevel >= LogLevelFatal { l.Output(LogLevelFatal, fmt.Sprint(v...)) }
 	os.Exit(1)
 }
 
 // Fatalln is equivalent to l.Println() followed by a call to os.Exit(1).
 func (l *Logger) Fatalln(v ...interface{}) {
-	if l.loglevel <= LogLevelFatal { l.Output(LogLevelFatal, fmt.Sprintln(v...)) }
+	if l.loglevel >= LogLevelFatal { l.Output(LogLevelFatal, fmt.Sprintln(v...)) }
 	os.Exit(1)
 }
 
 // Panic is equivalent to l.Print() followed by a call to panic().
 func (l *Logger) Panic(v ...interface{}) {
 	s := fmt.Sprint(v...)
-	if l.loglevel <= LogLevelPanic { l.Output(LogLevelPanic, s) }
+	if l.loglevel >= LogLevelPanic { l.Output(LogLevelPanic, s) }
 	l.Output(LogLevelPanic, s)
 	panic(s)
 }
@@ -350,33 +349,33 @@ func (l *Logger) Panic(v ...interface{}) {
 // Panicf is equivalent to l.Printf() followed by a call to panic().
 func (l *Logger) Panicf(format string, v ...interface{}) {
 	s := fmt.Sprintf(format, v...)
-	if l.loglevel <= LogLevelPanic { l.Output(LogLevelPanic, s) }
+	if l.loglevel >= LogLevelPanic { l.Output(LogLevelPanic, s) }
 	panic(s)
 }
 
 // Panicln is equivalent to l.Println() followed by a call to panic().
 func (l *Logger) Panicln(v ...interface{}) {
 	s := fmt.Sprintln(v...)
-	if l.loglevel <= LogLevelPanic { l.Output(LogLevelPanic, s) }
+	if l.loglevel >= LogLevelPanic { l.Output(LogLevelPanic, s) }
 	panic(s)
 }
 
 // Debug level logging.
 // Debugf is equivalent to l.Printf()
 func (l *Logger) Debugf(format string, v ...interface{}) {
-	if l.loglevel <= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprintf(format, v...)) }
+	if l.loglevel >= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprintf(format, v...)) }
 }
 
 // Debug level logging.
 // Debug is equivalent to l.Print()
 func (l *Logger) Debug(v ...interface{}) {
-	if l.loglevel <= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprint(v...)) }
+	if l.loglevel >= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprint(v...)) }
 }
 
 // Debug level logging.
 // Debugln is equivalent to l.Println()
 func (l *Logger) Debugln(v ...interface{}) {
-	if l.loglevel <= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprintln(v...)) }
+	if l.loglevel >= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprintln(v...)) }
 }
 
 // Flags returns the output flags for the logger.
