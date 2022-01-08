@@ -2,13 +2,13 @@
 [![GoDoc](https://godoc.org/github.com/SaintWish/auralog?status.svg)](https://godoc.org/github.com/SaintWish/auralog)
 
 A Go logging package based off Go's Log package with some differences. This has about as much overhead as the stock Log package because it doesn't use thirdparty packages like the stock package. The differences it has over the stock Go log library are below:
-* Different logging levels ``INFO, WARN, ERROR, FATAL, PANIC``
+* Different logging levels ``INFO, WARN, ERROR, FATAL, PANIC, DEBUG``
 * Config struct for cleaner initialization.
 * Removed helpers so it has to be manually.
 * Built in Rotate Writer io.Writer interface for basic log file rotation.
 
 ## Getting Started
-``go get github.com/saintwish/auralog`` Will get the latest from master branch.
+``go get github.com/saintwish/auralog`` Will get the latest release.
 
 ## Documentation
 [![GoDoc](https://godoc.org/github.com/SaintWish/auralog?status.svg)](https://godoc.org/github.com/SaintWish/auralog)
