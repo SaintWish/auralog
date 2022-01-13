@@ -42,13 +42,13 @@ func (w *RotateWriter) Write(output []byte) (int, error) {
   }
 
   fi, _ := os.Stat(w.Dir+w.Filename);
-  if w.MaxSize > 0 && fi.Size() >= w.MaxSize {
+  if (w.MaxSize > 0) && (fi.Size() >= w.MaxSize) {
     if err := w.Rotate(); err != nil {
       return 0, err
     }
   }
-
-  if w.now.After(w.now.Add(w.ExTime)) {
+  
+  if (w.ExTime > 0) && (time.Now().After(w.now.Add(w.ExTime))) {
     if err := w.Rotate(); err != nil {
       return 0, err
     }
@@ -61,9 +61,10 @@ func (w *RotateWriter) Write(output []byte) (int, error) {
 func (w *RotateWriter) Resume() error {
   var err error
   var filename = w.Dir+w.Filename
-
-  w.now = time.Now()
-  w.fp, err = os.OpenFile(filename, os.O_RDWR | os.O_CREATE, 0666)
+  
+  fi, _ := os.Stat(w.Dir+w.Filename);
+  w.now = fi.ModTime()
+  w.fp, err = os.OpenFile(filename, os.O_APPEND | os.O_WRONLY | os.O_CREATE, 0644)
   return err
 }
 
@@ -94,7 +95,7 @@ func (w *RotateWriter) Rotate() error {
 
   // Create a file.
   w.now = time.Now()
-  w.fp, err = os.OpenFile(filename, os.O_RDWR | os.O_CREATE, 0666)
+  w.fp, err = os.OpenFile(filename, os.O_WRONLY | os.O_CREATE, 0666)
   return err
 }
 
@@ -102,7 +103,7 @@ func (w *RotateWriter) Rotate() error {
 func (w *RotateWriter) renameFile() error {
   var filename = w.Dir+w.Filename
   newfn := filename[:len(filename)-len(filepath.Ext(w.Filename))]+"-"+time.Now().Format(time.RFC3339)+filepath.Ext(w.Filename)
-  err := os.Rename(filename, cleanName(newfn));
+  err := os.Rename(filename, cleanName(newfn))
   return err
 }
 
