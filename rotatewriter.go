@@ -62,10 +62,14 @@ func (w *RotateWriter) Resume() error {
   var err error
   var filename = w.Dir+w.Filename
   
-  fi, _ := os.Stat(w.Dir+w.Filename);
-  w.now = fi.ModTime()
   w.fp, err = os.OpenFile(filename, os.O_APPEND | os.O_WRONLY | os.O_CREATE, 0644)
-  return err
+  if err != nil {
+    return err
+  }
+  
+  fi, _ := os.Stat(filename);
+  w.now = fi.ModTime()
+  return nil
 }
 
 // Perform the actual act of rotating and reopening file.
