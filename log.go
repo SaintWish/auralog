@@ -14,9 +14,10 @@ import (
   "fmt"
   "io"
   "os"
-  "runtime"
   "sync"
   "time"
+  "runtime"
+  "runtime/debug"
 )
 
 type LogLevel int
@@ -28,6 +29,7 @@ type LogLevel int
 //  LogLevelFatal - Prints info, warn, error, fatal logs.
 //  LogLevelPanic - Prints info, warn, error, fatal, panic logs.
 //  LogLevelDebug - Prints info, warn, error, fatal, panic, debug logs.
+//  LogLevelTrace - Prints info, warn, error, fatal, panic, debug, trace logs.
 const (
   LogLevelInfo LogLevel = iota
   LogLevelWarn
@@ -35,12 +37,13 @@ const (
   LogLevelFatal
   LogLevelPanic
   LogLevelDebug
+  LogLevelTrace
 )
 
 // LogLevel.String returns the LogLevel string.
 //  Example: LogLevelWarn.String() will return "WARN: " string.
 func (l LogLevel) String() string {
-  return [7]string{"INFO: ", "WARN: ", "ERROR: ", "FATAL: ", "PANIC: ", "DEBUG: "}[l]
+  return [8]string{"INFO: ", "WARN: ", "ERROR: ", "FATAL: ", "PANIC: ", "DEBUG: ", "TRACE: "}[l]
 }
 
 // ToLogLevel(level string) return the log level constant from a string.
@@ -59,6 +62,8 @@ func ToLogLevel(level string) LogLevel {
     return LogLevelPanic
   case "debug":
     return LogLevelDebug
+  case "trace":
+    return LogLevelTrace
   default:
     return LogLevelError
   }
@@ -96,6 +101,7 @@ type Config struct {
   WarnFlag int // Required, flags for warn log.
   ErrorFlag int // Required, flags for error, fatal, and panic logs.
   DebugFlag int // Required, flags for debug logs.
+  TraceFlag int // Required, flags for trace logs.
 }
 
 // Cheap integer to fixed-width decimal ASCII. Give a negative width to avoid zero-padding.
@@ -129,6 +135,7 @@ type Logger struct {
   warflag int
   errflag int
   debflag int
+  traflag int
 
   mu sync.Mutex // ensures atomic writes; protects the following fields
   out io.Writer // destination for output
@@ -149,6 +156,7 @@ func New(c Config) *Logger {
     errflag: c.ErrorFlag,
     warflag: c.WarnFlag,
     debflag: c.DebugFlag,
+    traflag: c.TraceFlag,
   }
 }
 
@@ -186,6 +194,8 @@ func (l *Logger) formatHeader(buf *[]byte, t time.Time, level LogLevel) {
     flag = l.errflag
   case LogLevelDebug:
     flag = l.debflag
+  case LogLevelTrace:
+    flag = l.traflag
   }
 
   if flag&Lmsgprefix == 0 {
@@ -397,6 +407,27 @@ func (l *Logger) Debug(v ...interface{}) {
 // Debugln is equivalent to l.Println()
 func (l *Logger) Debugln(v ...interface{}) {
   if l.loglevel >= LogLevelDebug { l.Output(LogLevelDebug, fmt.Sprintln(v...)) }
+}
+
+// Trace level logging.
+// Tracef is equivalent to l.Printf()
+func (l *Logger) Tracef(format string, v ...interface{}) {
+  if l.loglevel >= LogLevelTrace { l.Output(LogLevelTrace, fmt.Sprintf(format, v...)) }
+  debug.PrintStack()
+}
+
+// Trace level logging.
+// Trace is equivalent to l.Print()
+func (l *Logger) Trace(v ...interface{}) {
+  if l.loglevel >= LogLevelTrace { l.Output(LogLevelTrace, fmt.Sprint(v...)) }
+  debug.PrintStack()
+}
+
+// Trace level logging.
+// Traceln is equivalent to l.Println()
+func (l *Logger) Traceln(v ...interface{}) {
+  if l.loglevel >= LogLevelTrace { l.Output(LogLevelTrace, fmt.Sprintln(v...)) }
+  debug.PrintStack()
 }
 
 // Flags returns the output flags for the logger.
