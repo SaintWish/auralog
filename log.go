@@ -309,6 +309,21 @@ func (l *Logger) Println(v ...interface{}) {
   l.Output(LogLevelInfo, fmt.Sprintln(v...))
 }
 
+// An alias for Print
+func (l *Logger) Infof(format string, v ...interface{}) {
+  l.Output(LogLevelInfo, fmt.Sprintf(format, v...))
+}
+
+// An alias for Print
+func (l *Logger) Info(v ...interface{}) {
+  l.Output(LogLevelInfo, fmt.Sprint(v...))
+}
+
+// An alias for Print
+func (l *Logger) Infoln(v ...interface{}) {
+  l.Output(LogLevelInfo, fmt.Sprintln(v...))
+}
+
 // Warn level logging.
 // Warnf calls l.Output to print to the logger.
 // Arguments are handled in the manner of fmt.Printf.
