@@ -427,22 +427,28 @@ func (l *Logger) Debugln(v ...interface{}) {
 // Trace level logging.
 // Tracef is equivalent to l.Printf()
 func (l *Logger) Tracef(format string, v ...interface{}) {
-  if l.loglevel >= LogLevelTrace { l.Output(LogLevelTrace, fmt.Sprintf(format, v...)) }
-  debug.PrintStack()
+  if l.loglevel >= LogLevelTrace { 
+    l.Output(LogLevelTrace, fmt.Sprintf(format, v...))
+    debug.PrintStack()
+  }
 }
 
 // Trace level logging.
 // Trace is equivalent to l.Print()
 func (l *Logger) Trace(v ...interface{}) {
-  if l.loglevel >= LogLevelTrace { l.Output(LogLevelTrace, fmt.Sprint(v...)) }
-  debug.PrintStack()
+  if l.loglevel >= LogLevelTrace { 
+    l.Output(LogLevelTrace, fmt.Sprint(v...))
+    debug.PrintStack()
+  }
 }
 
 // Trace level logging.
 // Traceln is equivalent to l.Println()
 func (l *Logger) Traceln(v ...interface{}) {
-  if l.loglevel >= LogLevelTrace { l.Output(LogLevelTrace, fmt.Sprintln(v...)) }
-  debug.PrintStack()
+  if l.loglevel >= LogLevelTrace { 
+    l.Output(LogLevelTrace, fmt.Sprintln(v...))
+    debug.PrintStack()
+  }
 }
 
 // Flags returns the output flags for the logger.
@@ -473,6 +479,13 @@ func (l *Logger) SetPrefix(prefix string) {
   l.mu.Lock()
   defer l.mu.Unlock()
   l.prefix = prefix
+}
+
+// SetLevel sets the log level for the logger.
+func (l *Logger) SetLevel(level LogLevel) {
+  l.mu.Lock()
+  defer l.mu.Unlock()
+  l.loglevel = level
 }
 
 // Writer returns the output destination for the logger.
