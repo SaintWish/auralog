@@ -36,14 +36,14 @@ const (
   LogLevelError
   LogLevelFatal
   LogLevelPanic
-  LogLevelDebug
   LogLevelTrace
+  LogLevelDebug
 )
 
 // LogLevel.String returns the LogLevel string.
 //  Example: LogLevelWarn.String() will return "WARN: " string.
 func (l LogLevel) String() string {
-  return [8]string{"INFO: ", "WARN: ", "ERROR: ", "FATAL: ", "PANIC: ", "DEBUG: ", "TRACE: "}[l]
+  return [8]string{"INFO: ", "WARN: ", "ERROR: ", "FATAL: ", "PANIC: ", "TRACE: ", "DEBUG: "}[l]
 }
 
 // ToLogLevel(level string) return the log level constant from a string.
