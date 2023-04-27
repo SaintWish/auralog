@@ -42,7 +42,7 @@ func (w *RotateWriter) Janitor() (error) {
 		if !item.IsDir() {
 			fi,_ := item.Info()
 
-			if ((time.Now().Sub(fi.ModTime()) > w.OldTime) && fi.Name().Contains(w.Filename)) {
+			if ((time.Now().Sub(fi.ModTime()) > w.OldTime) && strings.Contains(fi.Name(), w.Filename)) {
 				if err := os.Remove(w.Dir+"/"+w.Filename); err != nil {
 					return err
 				}
