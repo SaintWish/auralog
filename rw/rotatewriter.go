@@ -3,7 +3,7 @@
 
 // RotateWriter interfaces to io.Writer to automaticly rotate the
 // log file based on max size and/or time
-package auralog
+package rw
 
 import (
 	"os"
