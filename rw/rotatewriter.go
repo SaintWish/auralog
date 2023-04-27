@@ -40,9 +40,9 @@ func (w *RotateWriter) Janitor() (error) {
 
 	for _,item := range items {
 		if !item.IsDir() {
-			fi := item.Info()
+			fi,_ := item.Info()
 
-			if ((time.Now().Sub(fi.ModTime()) > w.OldTime) && strings.Contains(w.Filename)) {
+			if ((time.Now().Sub(fi.ModTime()) > w.OldTime) && fi.Name().Contains(w.Filename)) {
 				if err := os.Remove(w.Dir+"/"+w.Filename); err != nil {
 					return err
 				}
@@ -71,7 +71,7 @@ func (w *RotateWriter) Write(output []byte) (int, error) {
 		}
 	}
 
-	if (w.ExTime > 0) && (time.Now().After(w.now.Add(w.ExTime))) {
+	if (w.ExpireTime > 0) && (time.Now().After(w.now.Add(w.ExpireTime))) {
 		if err := w.Rotate(); err != nil {
 			return 0, err
 		}
