@@ -1,3 +1,6 @@
+# :warning: [DEPRECATED] :warning:
+As of Go 1.21 you are better off using [slog](https://go.dev/blog/slog), the rotatewriter io.Writer interface was moved to here https://github.com/SaintWish/rotatewriter
+
 # auralog
 [![GoDoc](https://godoc.org/github.com/SaintWish/auralog?status.svg)](https://godoc.org/github.com/SaintWish/auralog)
 
